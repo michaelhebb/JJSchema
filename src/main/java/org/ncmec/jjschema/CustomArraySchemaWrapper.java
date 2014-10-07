@@ -24,18 +24,19 @@ import com.fasterxml.jackson.databind.JsonNode;
 /**
  * @author Danilo Reinert
  */
-
 public class CustomArraySchemaWrapper extends CustomSchemaWrapper {
 
 	final SchemaWrapper itemsSchemaWrapper;
 
 	public CustomArraySchemaWrapper(final Class<?> type, final Class<?> parametrizedType) {
 		super(type);
+
 		if (parametrizedType != null) {
 			if (!Collection.class.isAssignableFrom(type)) {
-				throw new RuntimeException(
-						"Cannot instantiate a SchemaWrapper of a non Collection class with a Parametrized Type.");
+				throw new RuntimeException("Cannot instantiate a SchemaWrapper of a"
+						+ " non Collection class with a Parametrized Type.");
 			}
+
 			this.itemsSchemaWrapper = SchemaWrapperFactory.createWrapper(parametrizedType);
 		} else {
 			this.itemsSchemaWrapper = null;
@@ -55,6 +56,6 @@ public class CustomArraySchemaWrapper extends CustomSchemaWrapper {
 	}
 
 	protected void setItems(final JsonNode itemsNode) {
-		this.getNode().put("items", itemsNode);
+		this.getNode().replace("items", itemsNode);
 	}
 }

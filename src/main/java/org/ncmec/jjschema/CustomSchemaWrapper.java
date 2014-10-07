@@ -36,7 +36,6 @@ import com.google.common.collect.Lists;
 /**
  * @author Danilo Reinert
  */
-
 public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<PropertyWrapper> {
 
 	private final List<PropertyWrapper> propertyWrappers;
@@ -55,14 +54,17 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
 	public CustomSchemaWrapper(final Class<?> type, final Set<ManagedReference> managedReferences,
 			final String relativeId) {
 		super(type);
+
 		this.setType("object");
 		this.processNullable();
 		this.processAttributes(this.getNode(), type);
 		this.propertyWrappers = Lists.newArrayListWithExpectedSize(type.getDeclaredFields().length);
 		this.managedReferences = managedReferences;
+
 		if (relativeId != null) {
 			this.addTokenToRelativeId(relativeId);
 		}
+
 		this.processProperties();
 	}
 
@@ -85,7 +87,7 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
 			this.getNode().putObject("properties");
 		}
 
-		((ObjectNode) this.getNode().get("properties")).put(propertyWrapper.getName(),
+		((ObjectNode) this.getNode().get("properties")).replace(propertyWrapper.getName(),
 				propertyWrapper.asJson());
 
 		if (propertyWrapper.isRequired()) {
@@ -101,6 +103,7 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
 		if (!this.getNode().has("required")) {
 			this.getNode().putArray("required");
 		}
+
 		ArrayNode requiredNode = (ArrayNode) this.getNode().get("required");
 		requiredNode.add(name);
 	}
@@ -109,6 +112,7 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
 		if (this.managedReferences.contains(managedReference)) {
 			return false;
 		}
+
 		this.managedReferences.add(managedReference);
 		return true;
 	}
@@ -134,10 +138,12 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
 
 	protected void processProperties() {
 		HashMap<Method, Field> properties = this.findProperties();
+
 		for (Method method : properties.keySet()) {
 			PropertyWrapper propertyWrapper =
 					new PropertyWrapper(this, this.managedReferences, method,
 							properties.get(method));
+
 			if (!propertyWrapper.isEmptyWrapper()) {
 				this.addProperty(propertyWrapper);
 			}
@@ -147,6 +153,7 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
 	private HashMap<Method, Field> findProperties() {
 		Field[] fields = this.getJavaType().getDeclaredFields();
 		Method[] methods = this.getJavaType().getMethods();
+
 		// Ordering the properties
 		Arrays.sort(methods, new Comparator<Method>() {
 			@Override
@@ -159,6 +166,7 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
 		// get valid properties (get method and respective field (if exists))
 		for (Method method : methods) {
 			Class<?> declaringClass = method.getDeclaringClass();
+
 			if (declaringClass.equals(Object.class)
 					|| Collection.class.isAssignableFrom(declaringClass)) {
 				continue;
@@ -166,6 +174,7 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
 
 			if (isGetter(method)) {
 				boolean hasField = false;
+
 				for (Field field : fields) {
 					String name = getNameFromGetter(method);
 					if (field.getName().equalsIgnoreCase(name)) {
@@ -174,11 +183,13 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
 						break;
 					}
 				}
+
 				if (!hasField) {
 					props.put(method, null);
 				}
 			}
 		}
+
 		return props;
 	}
 
@@ -189,6 +200,7 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
 	private static String getNameFromGetter(final Method getter) {
 		String[] getterPrefixes = { "get", "is" };
 		String methodName = getter.getName();
+
 		String fieldName = null;
 		for (String prefix : getterPrefixes) {
 			if (methodName.startsWith(prefix)) {
@@ -200,8 +212,7 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
 			return null;
 		}
 
-		fieldName = fieldName.substring(0, 1).toLowerCase() + fieldName.substring(1);
-		return fieldName;
+		return fieldName.substring(0, 1).toLowerCase() + fieldName.substring(1);
 	}
 
 	protected void setRequired(final boolean required) {

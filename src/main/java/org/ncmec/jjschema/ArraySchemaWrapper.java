@@ -33,12 +33,15 @@ public class ArraySchemaWrapper extends SchemaWrapper {
 	public ArraySchemaWrapper(final Class<?> type, final Class<?> parametrizedType,
 			final Set<ManagedReference> managedReferences, final String relativeId) {
 		super(type);
+
 		this.setType("array");
+
 		if (parametrizedType != null) {
 			if (!Collection.class.isAssignableFrom(type)) {
-				throw new RuntimeException(
-						"Cannot instantiate a SchemaWrapper of a non Collection class with a Parametrized Type.");
+				throw new RuntimeException("Cannot instantiate a SchemaWrapper of a"
+						+ " non Collection class with a Parametrized Type.");
 			}
+
 			if (managedReferences == null) {
 				this.itemsSchemaWrapper = SchemaWrapperFactory.createWrapper(parametrizedType);
 			} else {
@@ -46,6 +49,7 @@ public class ArraySchemaWrapper extends SchemaWrapper {
 						SchemaWrapperFactory.createWrapper(parametrizedType, managedReferences,
 								relativeId);
 			}
+
 			this.setItems(this.itemsSchemaWrapper.asJson());
 		} else {
 			this.itemsSchemaWrapper = null;
@@ -63,6 +67,7 @@ public class ArraySchemaWrapper extends SchemaWrapper {
 
 	public ArraySchemaWrapper(final Class<?> type, final RefSchemaWrapper refSchemaWrapper) {
 		super(type);
+
 		this.setType("array");
 		this.itemsSchemaWrapper = refSchemaWrapper;
 		this.setItems(this.itemsSchemaWrapper.asJson());
@@ -86,6 +91,6 @@ public class ArraySchemaWrapper extends SchemaWrapper {
 	}
 
 	protected void setItems(final JsonNode itemsNode) {
-		this.getNode().put("items", itemsNode);
+		this.getNode().replace("items", itemsNode);
 	}
 }

@@ -25,7 +25,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * @author Danilo Reinert
  */
-
 public class SchemaWrapperFactory {
 
 	public static ObjectMapper MAPPER = new ObjectMapper();
@@ -46,26 +45,25 @@ public class SchemaWrapperFactory {
 
 	public static SchemaWrapper createWrapper(final Class<?> type,
 			final Set<ManagedReference> managedReferences, final String relativeId) {
-		// If it is void then return null
+
 		if ((type == Void.class) || (type == void.class) || (type == null)) {
 			return new NullSchemaWrapper(type);
-		}
-		// If it is a simple type, then just put the type
-		else if (SimpleTypeMappings.isSimpleType(type)) {
+
+		} else if (SimpleTypeMappings.isSimpleType(type)) {
 			return new SimpleSchemaWrapper(type);
-		}
-		// If it is an Enum than process like enum
-		else if (type.isEnum()) {
+
+		} else if (type.isEnum()) {
 			return new EnumSchemaWrapper(type);
-		}
-		// If none of the above possibilities were true, then it is a custom object
-		else {
+
+		} else {
 			if (managedReferences != null) {
 				if (relativeId != null) {
 					return new CustomSchemaWrapper(type, managedReferences, relativeId);
 				}
+
 				return new CustomSchemaWrapper(type, managedReferences);
 			}
+
 			return new CustomSchemaWrapper(type);
 		}
 	}
