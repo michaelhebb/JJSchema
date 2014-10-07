@@ -20,11 +20,9 @@ package org.ncmec.jjschema;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * Created with IntelliJ IDEA. User: reinert Date: 27/05/13 Time: 14:46
  *
  * @author Danilo Reinert
  */
-
 public class JsonSchemaV4Factory extends JsonSchemaFactory {
 
 	@Override

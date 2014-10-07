@@ -24,7 +24,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 /**
- * Mapping of builtin Java types to their matching JSON Schema primitive type
+ * Mapping of built-in Java types to their matching JSON Schema primitive type
  *
  * @author fge
  */
@@ -34,12 +34,15 @@ public enum SimpleTypeMappings {
 			int.class, "integer"), PRIMITIVE_LONG(long.class, "integer"), BYTE(Byte.class,
 			"integer"), SHORT(Short.class, "integer"), INTEGER(Integer.class, "integer"), LONG(
 			Long.class, "integer"), BIGINTEGER(BigInteger.class, "integer"),
+
 	// Number types
 	PRIMITIVE_FLOAT(float.class, "number"), PRIMITIVE_DOUBLE(double.class, "number"), FLOAT(
 			Float.class, "number"), DOUBLE(Double.class, "number"), BIGDECIMAL(BigDecimal.class,
 			"number"),
+
 	// Boolean types
 	PRIMITIVE_BOOLEAN(boolean.class, "boolean"), BOOLEAN(Boolean.class, "boolean"),
+
 	// String types
 	PRIMITIVE_CHAR(char.class, "string"), CHAR(Character.class, "string"), CHARSEQUENCE(
 			CharSequence.class, "string"), STRING(String.class, "string");

@@ -287,6 +287,10 @@ public class PropertyWrapper extends SchemaWrapper {
 				node.put("description", attributes.description());
 			}
 
+			if (!attributes.type().isEmpty()) {
+				node.put("type", attributes.type());
+			}
+
 			if (!attributes.pattern().isEmpty()) {
 				node.put("pattern", attributes.pattern());
 			}
