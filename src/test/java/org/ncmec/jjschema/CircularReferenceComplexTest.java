@@ -15,32 +15,46 @@
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
-package com.github.reinert.jjschema.inheritance;
+package org.ncmec.jjschema;
+
+import java.io.IOException;
 
 import org.junit.Test;
 import org.ncmec.jjschema.JsonSchemaFactory;
 import org.ncmec.jjschema.JsonSchemaV4Factory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.github.reinert.jjschema.model.Person;
+import com.github.reinert.jjschema.model.Task;
+import com.github.reinert.jjschema.model.TaskList;
 
 /**
- * @author Danilo Reinert
+ * @author reinert
  */
-
-public class InheritanceTest {
+public class CircularReferenceComplexTest {
 
 	static ObjectWriter WRITER = new ObjectMapper().writerWithDefaultPrettyPrinter();
 	JsonSchemaFactory schemaFactory = new JsonSchemaV4Factory();
 
+	/**
+	 * Test if @JsonManagedReference and @JsonBackReference works at a Complex Circular Reference
+	 * case. This feature is not stable yet.
+	 *
+	 * @throws java.io.IOException
+	 */
 	@Test
-	public void testGenerateSchema() throws JsonProcessingException {
-		JsonNode generatedSchema = this.schemaFactory.createSchema(MusicItem.class);
-		System.out.println(WRITER.writeValueAsString(generatedSchema));
+	public void testGenerateSchema() throws IOException {
 
-		generatedSchema = this.schemaFactory.createSchema(WarrantyItem.class);
-		System.out.println(WRITER.writeValueAsString(generatedSchema));
+		JsonNode taskSchema = this.schemaFactory.createSchema(Task.class);
+		System.out.println(WRITER.writeValueAsString(taskSchema));
+
+		JsonNode personSchema = this.schemaFactory.createSchema(Person.class);
+		System.out.println(WRITER.writeValueAsString(personSchema));
+
+		JsonNode taskListSchema = this.schemaFactory.createSchema(TaskList.class);
+		System.out.println(WRITER.writeValueAsString(taskListSchema));
 	}
+
 }

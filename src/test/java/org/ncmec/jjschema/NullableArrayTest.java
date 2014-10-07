@@ -15,32 +15,62 @@
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
-package com.github.reinert.jjschema.inheritance;
+package org.ncmec.jjschema;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
 
 import org.junit.Test;
 import org.ncmec.jjschema.JsonSchemaFactory;
 import org.ncmec.jjschema.JsonSchemaV4Factory;
+import org.ncmec.jjschema.Nullable;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 
 /**
- * @author Danilo Reinert
+ * @author reinert
  */
+public class NullableArrayTest {
 
-public class InheritanceTest {
-
-	static ObjectWriter WRITER = new ObjectMapper().writerWithDefaultPrettyPrinter();
+	static ObjectMapper MAPPER = new ObjectMapper();
 	JsonSchemaFactory schemaFactory = new JsonSchemaV4Factory();
 
-	@Test
-	public void testGenerateSchema() throws JsonProcessingException {
-		JsonNode generatedSchema = this.schemaFactory.createSchema(MusicItem.class);
-		System.out.println(WRITER.writeValueAsString(generatedSchema));
 
-		generatedSchema = this.schemaFactory.createSchema(WarrantyItem.class);
-		System.out.println(WRITER.writeValueAsString(generatedSchema));
+	@Test
+	public void testGenerateSchema() {
+
+		JsonNode schema = this.schemaFactory.createSchema(Something.class);
+		System.out.println(schema);
+
+		JsonNode expected = MAPPER.createArrayNode().add("array").add("null");
+
+		assertEquals(expected, schema.get("properties").get("names").get("type"));
+
+	}
+
+	static class Something {
+
+		private int id;
+		@Nullable
+		private List<String> names;
+
+		public int getId() {
+			return this.id;
+		}
+
+		public void setId(final int id) {
+			this.id = id;
+		}
+
+		public List<String> getNames() {
+			return this.names;
+		}
+
+		public void setNames(final List<String> names) {
+			this.names = names;
+		}
+
 	}
 }
