@@ -16,7 +16,7 @@
  * - ASL 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
-package com.github.reinert.jjschema.inheritance;
+package org.ncmec.jjschema.inheritance;
 
 //TODO: Extend BaseItem to demonstrate the problem
 public class WarrantyItem extends BaseItem {

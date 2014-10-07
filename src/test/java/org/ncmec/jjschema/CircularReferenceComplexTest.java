@@ -22,13 +22,13 @@ import java.io.IOException;
 import org.junit.Test;
 import org.ncmec.jjschema.JsonSchemaFactory;
 import org.ncmec.jjschema.JsonSchemaV4Factory;
+import org.ncmec.jjschema.model.Person;
+import org.ncmec.jjschema.model.Task;
+import org.ncmec.jjschema.model.TaskList;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.github.reinert.jjschema.model.Person;
-import com.github.reinert.jjschema.model.Task;
-import com.github.reinert.jjschema.model.TaskList;
 
 /**
  * @author reinert

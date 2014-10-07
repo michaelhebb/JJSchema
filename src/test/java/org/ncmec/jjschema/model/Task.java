@@ -16,7 +16,7 @@
  * - ASL 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
-package com.github.reinert.jjschema.model;
+package org.ncmec.jjschema.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 

@@ -15,7 +15,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
-package com.github.reinert.jjschema.inheritance;
+package org.ncmec.jjschema.inheritance;
 
 import org.junit.Test;
 import org.ncmec.jjschema.JsonSchemaFactory;

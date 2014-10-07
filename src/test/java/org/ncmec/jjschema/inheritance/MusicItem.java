@@ -16,29 +16,38 @@
  * - ASL 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 
-package com.github.reinert.jjschema.inheritance;
+package org.ncmec.jjschema.inheritance;
 
-import java.util.Set;
+import java.math.BigDecimal;
 
-public abstract class BaseItem {
+public class MusicItem extends BaseItem {
 
-	private long id;
-	private Set<WarrantyItem> availableWarrantyItems;
-	
-	public long getId() {
-		return id;
+	private BigDecimal price;
+	private String artistName;
+	private String releaseYear;
+
+	public String getArtistName() {
+		return artistName;
 	}
 	
-	public void setId(long id) {
-		this.id = id;
+	public void setArtistName(String artistName) {
+		this.artistName = artistName;
 	}
 	
-	public Set<WarrantyItem> getAvailableWarrantyItems() {
-		return availableWarrantyItems;
+	public String getReleaseYear() {
+		return releaseYear;
 	}
 	
-	public void setAvailableWarrantyItems(Set<WarrantyItem> availableWarrantyItems) {
-		this.availableWarrantyItems = availableWarrantyItems;
+	public void setReleaseYear(String releaseYear) {
+		this.releaseYear = releaseYear;
 	}
-	
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
+
 }
