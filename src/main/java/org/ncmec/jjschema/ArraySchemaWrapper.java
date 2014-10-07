@@ -17,10 +17,10 @@
 
 package org.ncmec.jjschema;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import java.util.Collection;
 import java.util.Set;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * @author Danilo Reinert
@@ -30,48 +30,50 @@ public class ArraySchemaWrapper extends SchemaWrapper {
 
 	final SchemaWrapper itemsSchemaWrapper;
 
-	public ArraySchemaWrapper(Class<?> type, Class<?> parametrizedType,
-			Set<ManagedReference> managedReferences, String relativeId) {
+	public ArraySchemaWrapper(final Class<?> type, final Class<?> parametrizedType,
+			final Set<ManagedReference> managedReferences, final String relativeId) {
 		super(type);
-		setType("array");
+		this.setType("array");
 		if (parametrizedType != null) {
-			if (!Collection.class.isAssignableFrom(type))
+			if (!Collection.class.isAssignableFrom(type)) {
 				throw new RuntimeException(
 						"Cannot instantiate a SchemaWrapper of a non Collection class with a Parametrized Type.");
-			if (managedReferences == null)
+			}
+			if (managedReferences == null) {
 				this.itemsSchemaWrapper = SchemaWrapperFactory.createWrapper(parametrizedType);
-			else
+			} else {
 				this.itemsSchemaWrapper =
 						SchemaWrapperFactory.createWrapper(parametrizedType, managedReferences,
 								relativeId);
-			setItems(this.itemsSchemaWrapper.asJson());
+			}
+			this.setItems(this.itemsSchemaWrapper.asJson());
 		} else {
 			this.itemsSchemaWrapper = null;
 		}
 	}
 
-	public ArraySchemaWrapper(Class<?> type, Class<?> parametrizedType,
-			Set<ManagedReference> managedReferences) {
+	public ArraySchemaWrapper(final Class<?> type, final Class<?> parametrizedType,
+			final Set<ManagedReference> managedReferences) {
 		this(type, parametrizedType, managedReferences, null);
 	}
 
-	public ArraySchemaWrapper(Class<?> type, Class<?> parametrizedType) {
+	public ArraySchemaWrapper(final Class<?> type, final Class<?> parametrizedType) {
 		this(type, parametrizedType, null);
 	}
 
-	public ArraySchemaWrapper(Class<?> type, RefSchemaWrapper refSchemaWrapper) {
+	public ArraySchemaWrapper(final Class<?> type, final RefSchemaWrapper refSchemaWrapper) {
 		super(type);
-		setType("array");
+		this.setType("array");
 		this.itemsSchemaWrapper = refSchemaWrapper;
-		setItems(this.itemsSchemaWrapper.asJson());
+		this.setItems(this.itemsSchemaWrapper.asJson());
 	}
 
 	public Class<?> getJavaParametrizedType() {
-		return itemsSchemaWrapper.getJavaType();
+		return this.itemsSchemaWrapper.getJavaType();
 	}
 
 	public SchemaWrapper getItemsSchema() {
-		return itemsSchemaWrapper;
+		return this.itemsSchemaWrapper;
 	}
 
 	@Override
@@ -80,10 +82,10 @@ public class ArraySchemaWrapper extends SchemaWrapper {
 	}
 
 	protected JsonNode getItems() {
-		return getNode().get("items");
+		return this.getNode().get("items");
 	}
 
-	protected void setItems(JsonNode itemsNode) {
-		getNode().put("items", itemsNode);
+	protected void setItems(final JsonNode itemsNode) {
+		this.getNode().put("items", itemsNode);
 	}
 }

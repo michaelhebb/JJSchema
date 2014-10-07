@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 /**
  * Annotation for rel attribute of JSON Hyper-Schema
  *
- * @author reinert
+ * @author Danilo Reinert
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

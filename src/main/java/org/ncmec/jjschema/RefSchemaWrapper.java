@@ -23,14 +23,14 @@ package org.ncmec.jjschema;
 
 public class RefSchemaWrapper extends SchemaWrapper {
 
-	public RefSchemaWrapper(Class<?> type) {
+	public RefSchemaWrapper(final Class<?> type) {
 		super(type);
-		setRef("#");
+		this.setRef("#");
 	}
 
-	public RefSchemaWrapper(Class<?> type, String ref) {
+	public RefSchemaWrapper(final Class<?> type, final String ref) {
 		super(type);
-		setRef(ref);
+		this.setRef(ref);
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class RefSchemaWrapper extends SchemaWrapper {
 		return true;
 	}
 
-	public void setRef(String ref) {
-		getNode().put("$ref", ref);
+	public void setRef(final String ref) {
+		this.getNode().put("$ref", ref);
 	}
 }

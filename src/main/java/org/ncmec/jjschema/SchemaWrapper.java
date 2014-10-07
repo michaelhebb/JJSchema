@@ -25,96 +25,104 @@ import com.github.fge.jsonschema.SchemaVersion;
 /**
  * @author Danilo Reinert
  */
-
 public abstract class SchemaWrapper {
 	private final Class<?> type;
 	private final ObjectNode node = SchemaWrapperFactory.MAPPER.createObjectNode();
 
-	public SchemaWrapper(Class<?> type) {
+	public SchemaWrapper(final Class<?> type) {
 		this.type = type;
 	}
 
 	public JsonNode asJson() {
-		return node;
+		return this.node;
 	}
 
 	public String getDollarSchema() {
-		return getNodeTextValue(node.get("$schema"));
+		return this.getNodeTextValue(this.node.get("$schema"));
 	}
 
 	public SchemaWrapper putDollarSchema() {
-		node.put("$schema", SchemaVersion.DRAFTV4.getLocation().toString());
+		this.node.put("$schema", SchemaVersion.DRAFTV4.getLocation().toString());
 		return this;
 	}
 
 	public String getId() {
-		return getNodeTextValue(node.get("id"));
+		return this.getNodeTextValue(this.node.get("id"));
 	}
 
 	public String getRef() {
-		return getNodeTextValue(node.get("$ref"));
+		return this.getNodeTextValue(this.node.get("$ref"));
 	}
 
 	public String getType() {
-		return getNodeTextValue(node.get("type"));
+		return this.getNodeTextValue(this.node.get("type"));
 	}
 
 	public Class<?> getJavaType() {
-		return type;
+		return this.type;
 	}
 
+	@SuppressWarnings("static-method")
 	public boolean isEnumWrapper() {
 		return false;
 	}
 
+	@SuppressWarnings("static-method")
 	public boolean isSimpleWrapper() {
 		return false;
 	}
 
+	@SuppressWarnings("static-method")
 	public boolean isCustomWrapper() {
 		return false;
 	}
 
+	@SuppressWarnings("static-method")
 	public boolean isRefWrapper() {
 		return false;
 	}
 
+	@SuppressWarnings("static-method")
 	public boolean isArrayWrapper() {
 		return false;
 	}
 
+	@SuppressWarnings("static-method")
 	public boolean isEmptyWrapper() {
 		return false;
 	}
 
+	@SuppressWarnings("static-method")
 	public boolean isNullWrapper() {
 		return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T extends SchemaWrapper> T cast() {
 		return (T) this;
 	}
 
 	protected ObjectNode getNode() {
-		return node;
+		return this.node;
 	}
 
 	// TODO: Shouldn't I check the Nullable annotation only on fields or methods?
 	protected void processNullable() {
-		final Nullable nullable = type.getAnnotation(Nullable.class);
+		final Nullable nullable = this.type.getAnnotation(Nullable.class);
 		if (nullable != null) {
-			String oldType = node.get("type").asText();
-			ArrayNode typeArray = node.putArray("type");
+			String oldType = this.node.get("type").asText();
+			ArrayNode typeArray = this.node.putArray("type");
 			typeArray.add(oldType);
 			typeArray.add("null");
 		}
 	}
 
-	protected String getNodeTextValue(JsonNode node) {
-		return node == null ? null : node.textValue();
+	@SuppressWarnings("static-method")
+	protected String getNodeTextValue(final JsonNode jsonNode) {
+		return jsonNode == null ? null : jsonNode.textValue();
 	}
 
-	protected void setType(String type) {
-		node.put("type", type);
+	protected void setType(final String type) {
+		this.node.put("type", type);
 	}
 }

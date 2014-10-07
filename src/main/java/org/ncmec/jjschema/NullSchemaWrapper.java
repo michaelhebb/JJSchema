@@ -23,9 +23,9 @@ package org.ncmec.jjschema;
 
 public class NullSchemaWrapper extends SchemaWrapper {
 
-	public NullSchemaWrapper(Class<?> type) {
+	public NullSchemaWrapper(final Class<?> type) {
 		super(type);
-		setType("null");
+		this.setType("null");
 	}
 
 	@Override

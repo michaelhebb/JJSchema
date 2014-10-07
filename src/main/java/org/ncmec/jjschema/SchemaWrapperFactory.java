@@ -17,10 +17,10 @@
 
 package org.ncmec.jjschema;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.util.AbstractCollection;
 import java.util.Set;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Danilo Reinert
@@ -30,22 +30,24 @@ public class SchemaWrapperFactory {
 
 	public static ObjectMapper MAPPER = new ObjectMapper();
 
-	public static SchemaWrapper createWrapper(Class<?> type) {
+	public static SchemaWrapper createWrapper(final Class<?> type) {
 		return createWrapper(type, null);
 	}
 
-	public static SchemaWrapper createArrayWrapper(Class<?> type, Class<?> parametrizedType) {
+	public static SchemaWrapper createArrayWrapper(final Class<?> type,
+			final Class<?> parametrizedType) {
 		return new ArraySchemaWrapper(type, parametrizedType);
 	}
 
-	public static SchemaWrapper createWrapper(Class<?> type, Set<ManagedReference> managedReferences) {
+	public static SchemaWrapper createWrapper(final Class<?> type,
+			final Set<ManagedReference> managedReferences) {
 		return createWrapper(type, managedReferences, null);
 	}
 
-	public static SchemaWrapper createWrapper(Class<?> type,
-			Set<ManagedReference> managedReferences, String relativeId) {
+	public static SchemaWrapper createWrapper(final Class<?> type,
+			final Set<ManagedReference> managedReferences, final String relativeId) {
 		// If it is void then return null
-		if (type == Void.class || type == void.class || type == null) {
+		if ((type == Void.class) || (type == void.class) || (type == null)) {
 			return new NullSchemaWrapper(type);
 		}
 		// If it is a simple type, then just put the type
@@ -58,27 +60,28 @@ public class SchemaWrapperFactory {
 		}
 		// If none of the above possibilities were true, then it is a custom object
 		else {
-			if (managedReferences != null)
-				if (relativeId != null)
+			if (managedReferences != null) {
+				if (relativeId != null) {
 					return new CustomSchemaWrapper(type, managedReferences, relativeId);
-				else
-					return new CustomSchemaWrapper(type, managedReferences);
-			else
-				return new CustomSchemaWrapper(type);
+				}
+				return new CustomSchemaWrapper(type, managedReferences);
+			}
+			return new CustomSchemaWrapper(type);
 		}
 	}
 
-	public static SchemaWrapper createArrayWrapper(Class<?> type, Class<?> parametrizedType,
-			Set<ManagedReference> managedReferences) {
+	public static SchemaWrapper createArrayWrapper(final Class<?> type,
+			final Class<?> parametrizedType, final Set<ManagedReference> managedReferences) {
 		return new ArraySchemaWrapper(type, parametrizedType, managedReferences);
 	}
 
-	public static SchemaWrapper createArrayWrapper(Class<?> type, Class<?> parametrizedType,
-			Set<ManagedReference> managedReferences, String relativeId) {
+	public static SchemaWrapper createArrayWrapper(final Class<?> type,
+			final Class<?> parametrizedType, final Set<ManagedReference> managedReferences,
+			final String relativeId) {
 		return new ArraySchemaWrapper(type, parametrizedType, managedReferences, relativeId);
 	}
 
-	public static SchemaWrapper createArrayRefWrapper(RefSchemaWrapper refSchemaWrapper) {
+	public static SchemaWrapper createArrayRefWrapper(final RefSchemaWrapper refSchemaWrapper) {
 		return new ArraySchemaWrapper(AbstractCollection.class, refSchemaWrapper);
 	}
 }

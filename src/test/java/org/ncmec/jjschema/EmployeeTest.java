@@ -25,9 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
-import org.ncmec.jjschema.Attributes;
-import org.ncmec.jjschema.JsonSchemaFactory;
-import org.ncmec.jjschema.JsonSchemaV4Factory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -82,8 +79,8 @@ public class EmployeeTest {
 		Map properties = (Map) ((Map) result.get("properties")).get("name");
 		assertEquals("string", properties.get("type"));
 		assertEquals("Name", properties.get("description"));
-		assertEquals(5, properties.get("minLength"));
-		assertEquals(50, properties.get("maxLength"));
+		assertEquals(Integer.valueOf(5), properties.get("minLength"));
+		assertEquals(Integer.valueOf(50), properties.get("maxLength"));
 		properties = (Map) ((Map) result.get("properties")).get("retired");
 		assertEquals("boolean", properties.get("type"));
 	}

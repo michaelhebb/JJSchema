@@ -50,8 +50,9 @@ public enum SimpleTypeMappings {
 		// Class objects are all singletons, so we can use that
 		MAPPINGS = new IdentityHashMap<Class<?>, String>();
 
-		for (final SimpleTypeMappings mapping : values())
+		for (final SimpleTypeMappings mapping : values()) {
 			MAPPINGS.put(mapping.c, mapping.schemaType);
+		}
 	}
 
 	private final Class<?> c;
@@ -70,8 +71,9 @@ public enum SimpleTypeMappings {
 	 * @return the primitive type if found, {@code null} otherwise
 	 */
 	public static String forClass(final Class<?> c) {
-		if (AbstractCollection.class.isAssignableFrom(c))
+		if (AbstractCollection.class.isAssignableFrom(c)) {
 			return "array";
+		}
 		return MAPPINGS.get(c);
 	}
 

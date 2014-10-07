@@ -17,13 +17,21 @@
 
 package org.ncmec.jjschema;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Set;
+
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.*;
 
 /**
  * @author Danilo Reinert
@@ -36,80 +44,77 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
 	private final Set<ManagedReference> managedReferences;
 	private String relativeId = "#";
 
-	public CustomSchemaWrapper(Class<?> type) {
+	public CustomSchemaWrapper(final Class<?> type) {
 		this(type, new HashSet<ManagedReference>());
 	}
 
-	public CustomSchemaWrapper(Class<?> type, Set<ManagedReference> managedReferences) {
+	public CustomSchemaWrapper(final Class<?> type, final Set<ManagedReference> managedReferences) {
 		this(type, managedReferences, null);
 	}
 
-	public CustomSchemaWrapper(Class<?> type, Set<ManagedReference> managedReferences,
-			String relativeId) {
+	public CustomSchemaWrapper(final Class<?> type, final Set<ManagedReference> managedReferences,
+			final String relativeId) {
 		super(type);
-		setType("object");
-		processNullable();
-		processAttributes(getNode(), type);
-		propertyWrappers = Lists.newArrayListWithExpectedSize(type.getDeclaredFields().length);
+		this.setType("object");
+		this.processNullable();
+		this.processAttributes(this.getNode(), type);
+		this.propertyWrappers = Lists.newArrayListWithExpectedSize(type.getDeclaredFields().length);
 		this.managedReferences = managedReferences;
 		if (relativeId != null) {
-			addTokenToRelativeId(relativeId);
+			this.addTokenToRelativeId(relativeId);
 		}
-		processProperties();
+		this.processProperties();
 	}
 
 	public String getRelativeId() {
-		return relativeId;
+		return this.relativeId;
 	}
 
-	protected void addTokenToRelativeId(String token) {
-		if (token.startsWith("#"))
-			relativeId = token;
-		else
-			relativeId = relativeId + "/" + token;
+	protected void addTokenToRelativeId(final String token) {
+		if (token.startsWith("#")) {
+			this.relativeId = token;
+		} else {
+			this.relativeId = this.relativeId + "/" + token;
+		}
 	}
 
-	public void addProperty(PropertyWrapper propertyWrapper) {
+	public void addProperty(final PropertyWrapper propertyWrapper) {
 		this.propertyWrappers.add(propertyWrapper);
 
-		if (!getNode().has("properties"))
-			getNode().putObject("properties");
+		if (!this.getNode().has("properties")) {
+			this.getNode().putObject("properties");
+		}
 
-		((ObjectNode) getNode().get("properties")).put(propertyWrapper.getName(),
+		((ObjectNode) this.getNode().get("properties")).put(propertyWrapper.getName(),
 				propertyWrapper.asJson());
 
-		if (propertyWrapper.isRequired())
-			addRequired(propertyWrapper.getName());
+		if (propertyWrapper.isRequired()) {
+			this.addRequired(propertyWrapper.getName());
+		}
 	}
-
-	// public boolean removeProperty(PropertyWrapper propertyWrapper) {
-	// return propertyWrappers.remove(propertyWrapper);
-	// }
-	//
-	// public void clearProperties() {
-	// propertyWrappers.clear();
-	// }
 
 	public boolean isRequired() {
-		return required;
+		return this.required;
 	}
 
-	public void addRequired(String name) {
-		if (!getNode().has("required"))
-			getNode().putArray("required");
-		ArrayNode requiredNode = (ArrayNode) getNode().get("required");
+	public void addRequired(final String name) {
+		if (!this.getNode().has("required")) {
+			this.getNode().putArray("required");
+		}
+		ArrayNode requiredNode = (ArrayNode) this.getNode().get("required");
 		requiredNode.add(name);
 	}
 
-	public boolean pullReference(ManagedReference managedReference) {
-		if (managedReferences.contains(managedReference))
+	public boolean pullReference(final ManagedReference managedReference) {
+		if (this.managedReferences.contains(managedReference)) {
 			return false;
-		managedReferences.add(managedReference);
+		}
+		this.managedReferences.add(managedReference);
 		return true;
 	}
 
-	public boolean pushReference(ManagedReference managedReference) {
-		return managedReferences.remove(managedReference);
+	public boolean pushReference(final ManagedReference managedReference) {
+		return this.managedReferences.remove(managedReference);
 	}
 
 	@Override
@@ -124,25 +129,28 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
 	 */
 	@Override
 	public Iterator<PropertyWrapper> iterator() {
-		return propertyWrappers.iterator();
+		return this.propertyWrappers.iterator();
 	}
 
 	protected void processProperties() {
-		HashMap<Method, Field> properties = findProperties();
+		HashMap<Method, Field> properties = this.findProperties();
 		for (Method method : properties.keySet()) {
 			PropertyWrapper propertyWrapper =
-					new PropertyWrapper(this, managedReferences, method, properties.get(method));
-			if (!propertyWrapper.isEmptyWrapper())
-				addProperty(propertyWrapper);
+					new PropertyWrapper(this, this.managedReferences, method,
+							properties.get(method));
+			if (!propertyWrapper.isEmptyWrapper()) {
+				this.addProperty(propertyWrapper);
+			}
 		}
 	}
 
 	private HashMap<Method, Field> findProperties() {
-		Field[] fields = getJavaType().getDeclaredFields();
-		Method[] methods = getJavaType().getMethods();
+		Field[] fields = this.getJavaType().getDeclaredFields();
+		Method[] methods = this.getJavaType().getMethods();
 		// Ordering the properties
 		Arrays.sort(methods, new Comparator<Method>() {
-			public int compare(Method m1, Method m2) {
+			@Override
+			public int compare(final Method m1, final Method m2) {
 				return m1.getName().compareTo(m2.getName());
 			}
 		});
@@ -174,11 +182,11 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
 		return props;
 	}
 
-	private boolean isGetter(final Method method) {
+	private static boolean isGetter(final Method method) {
 		return method.getName().startsWith("get") || method.getName().startsWith("is");
 	}
 
-	private String getNameFromGetter(final Method getter) {
+	private static String getNameFromGetter(final Method getter) {
 		String[] getterPrefixes = { "get", "is" };
 		String methodName = getter.getName();
 		String fieldName = null;
@@ -196,11 +204,11 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
 		return fieldName;
 	}
 
-	protected void setRequired(boolean required) {
+	protected void setRequired(final boolean required) {
 		this.required = required;
 	}
 
-	protected void processAttributes(ObjectNode node, Class<?> type) {
+	protected void processAttributes(final ObjectNode node, final Class<?> type) {
 		final Attributes attributes = type.getAnnotation(Attributes.class);
 		if (attributes != null) {
 			// node.put("$schema", SchemaVersion.DRAFTV4.getLocation().toString());
@@ -254,7 +262,7 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
 				node.put("maxLength", attributes.maxItems());
 			}
 			if (attributes.required()) {
-				setRequired(true);
+				this.setRequired(true);
 			}
 		}
 	}

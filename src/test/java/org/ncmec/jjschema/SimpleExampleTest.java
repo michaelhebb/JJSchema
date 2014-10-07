@@ -23,16 +23,13 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.junit.Test;
-import org.ncmec.jjschema.Attributes;
-import org.ncmec.jjschema.JsonSchemaFactory;
-import org.ncmec.jjschema.JsonSchemaV4Factory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * @author reinert
+ * @author Danilo Reinert
  */
 public class SimpleExampleTest {
 
@@ -43,13 +40,17 @@ public class SimpleExampleTest {
 	public void testGenerateSchema() throws JsonProcessingException, IOException {
 
 		final InputStream in = SimpleExampleTest.class.getResourceAsStream("/simple_example.json");
+
 		if (in == null) {
 			throw new IOException("resource not found");
 		}
+
 		JsonNode fromResource = MAPPER.readTree(in);
 		JsonNode fromJavaType = this.schemaFactory.createSchema(SimpleExample.class);
 
 		assertEquals(fromResource, fromJavaType);
+
+		in.close();
 	}
 
 	@Attributes(title = "Example Schema")

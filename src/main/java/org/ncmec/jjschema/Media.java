@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 /**
  * Annotation for mediaType and binaryEnconding attributes of JSON Hyper-Schema
  *
- * @author reinert
+ * @author Danilo Reinert
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD, ElementType.PARAMETER })

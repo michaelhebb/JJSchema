@@ -32,10 +32,10 @@ public abstract class JsonSchemaFactory {
 	public abstract JsonNode createSchema(Class<?> type);
 
 	public boolean isAutoPutDollarSchema() {
-		return autoPutDollarSchema;
+		return this.autoPutDollarSchema;
 	}
 
-	public void setAutoPutDollarSchema(boolean autoPutDollarSchema) {
+	public void setAutoPutDollarSchema(final boolean autoPutDollarSchema) {
 		this.autoPutDollarSchema = autoPutDollarSchema;
 	}
 }

@@ -17,12 +17,6 @@
 
 package org.ncmec.jjschema;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -30,10 +24,15 @@ import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 /**
  * @author Danilo Reinert
  */
-
 public class PropertyWrapper extends SchemaWrapper {
 
 	enum ReferenceType {
@@ -49,19 +48,18 @@ public class PropertyWrapper extends SchemaWrapper {
 	ManagedReference managedReference;
 	ReferenceType referenceType;
 
-	public PropertyWrapper(CustomSchemaWrapper ownerSchemaWrapper,
-			Set<ManagedReference> managedReferences, Method method, Field field) {
+	public PropertyWrapper(final CustomSchemaWrapper ownerSchemaWrapper,
+			final Set<ManagedReference> managedReferences, final Method method, final Field field) {
 		super(null);
 
-		if (method == null)
+		if (method == null) {
 			throw new RuntimeException("Error at " + ownerSchemaWrapper.getJavaType().getName()
 					+ ": Cannot instantiate a PropertyWrapper with a null method.");
+		}
 
 		this.ownerSchemaWrapper = ownerSchemaWrapper;
 		this.field = field;
 		this.method = method;
-
-
 
 		String relativeId;
 
@@ -69,28 +67,30 @@ public class PropertyWrapper extends SchemaWrapper {
 		Class<?> collectionType = null;
 		final String propertiesStr = "/properties/";
 		String itemsStr = "/items";
+
 		if (Collection.class.isAssignableFrom(propertyType)) {
 			collectionType = method.getReturnType();
 			ParameterizedType genericType = (ParameterizedType) method.getGenericReturnType();
 			propertyType = (Class<?>) genericType.getActualTypeArguments()[0];
 
-			relativeId = propertiesStr + getName() + itemsStr;
+			relativeId = propertiesStr + this.getName() + itemsStr;
 		} else {
-			relativeId = propertiesStr + getName();
+			relativeId = propertiesStr + this.getName();
 		}
 
-		processReference(propertyType);
+		this.processReference(propertyType);
 
-		if (getAccessibleObject().getAnnotation(SchemaIgnore.class) != null) {
+		if (this.getAccessibleObject().getAnnotation(SchemaIgnore.class) != null) {
 			this.schemaWrapper = new EmptySchemaWrapper();
-		} else if (getReferenceType() == ReferenceType.BACKWARD) {
-			SchemaWrapper schemaWrapper;
+		} else if (this.getReferenceType() == ReferenceType.BACKWARD) {
+			SchemaWrapper sw;
 			String id = processId(method.getReturnType());
+
 			if (id != null) {
-				schemaWrapper = new RefSchemaWrapper(propertyType, id);
-				ownerSchemaWrapper.pushReference(getManagedReference());
+				sw = new RefSchemaWrapper(propertyType, id);
+				ownerSchemaWrapper.pushReference(this.getManagedReference());
 			} else {
-				if (ownerSchemaWrapper.pushReference(getManagedReference())) {
+				if (ownerSchemaWrapper.pushReference(this.getManagedReference())) {
 					String relativeId1 = ownerSchemaWrapper.getRelativeId();
 					if (relativeId1.endsWith(itemsStr)) {
 						relativeId1 =
@@ -105,28 +105,33 @@ public class PropertyWrapper extends SchemaWrapper {
 								relativeId1.substring(0, relativeId1.lastIndexOf("/")
 										- (propertiesStr.length() - 1));
 					}
-					schemaWrapper = new RefSchemaWrapper(propertyType, relativeId1);
-				} else
-					schemaWrapper = new EmptySchemaWrapper();
+					sw = new RefSchemaWrapper(propertyType, relativeId1);
+				} else {
+					sw = new EmptySchemaWrapper();
+				}
 			}
-			if (schemaWrapper.isRefWrapper() && collectionType != null)
+
+			if (sw.isRefWrapper() && (collectionType != null)) {
 				this.schemaWrapper =
-						SchemaWrapperFactory.createArrayRefWrapper((RefSchemaWrapper) schemaWrapper);
-			else
-				this.schemaWrapper = schemaWrapper;
+						SchemaWrapperFactory.createArrayRefWrapper((RefSchemaWrapper) sw);
+			} else {
+				this.schemaWrapper = sw;
+			}
 		} else if (ownerSchemaWrapper.getJavaType() == propertyType) {
-			SchemaWrapper schemaWrapper =
+			SchemaWrapper sw =
 					new RefSchemaWrapper(propertyType, ownerSchemaWrapper.getRelativeId());
+
 			if (collectionType != null) {
 				this.schemaWrapper =
-						SchemaWrapperFactory.createArrayRefWrapper((RefSchemaWrapper) schemaWrapper);
+						SchemaWrapperFactory.createArrayRefWrapper((RefSchemaWrapper) sw);
 			} else {
-				this.schemaWrapper = schemaWrapper;
+				this.schemaWrapper = sw;
 			}
 		} else {
-			if (getReferenceType() == ReferenceType.FORWARD) {
-				ownerSchemaWrapper.pullReference(getManagedReference());
+			if (this.getReferenceType() == ReferenceType.FORWARD) {
+				ownerSchemaWrapper.pullReference(this.getManagedReference());
 			}
+
 			String relativeId1 = ownerSchemaWrapper.getRelativeId() + relativeId;
 			if (collectionType != null) {
 				this.schemaWrapper =
@@ -137,162 +142,175 @@ public class PropertyWrapper extends SchemaWrapper {
 						SchemaWrapperFactory.createWrapper(propertyType, managedReferences,
 								relativeId1);
 			}
-			processAttributes(getNode(), getAccessibleObject());
-			processNullable();
+
+			this.processAttributes(this.getNode(), this.getAccessibleObject());
+			this.processNullable();
 		}
 	}
 
 	public Field getField() {
-		return field;
+		return this.field;
 	}
 
 	public Method getMethod() {
-		return method;
+		return this.method;
 	}
 
 	public SchemaWrapper getOwnerSchema() {
-		return ownerSchemaWrapper;
+		return this.ownerSchemaWrapper;
 	}
 
 	public String getName() {
-		if (name == null)
-			name = processPropertyName();
-		return name;
+		if (this.name == null) {
+			this.name = this.processPropertyName();
+		}
+		return this.name;
 	}
 
 	public boolean isRequired() {
-		return required;
+		return this.required;
 	}
 
 	public ManagedReference getManagedReference() {
-		return managedReference;
+		return this.managedReference;
 	}
 
 	public ReferenceType getReferenceType() {
-		return referenceType;
+		return this.referenceType;
 	}
 
 	public boolean isReference() {
-		return managedReference != null;
+		return this.managedReference != null;
 	}
 
 	@Override
 	public JsonNode asJson() {
-		return schemaWrapper.asJson();
+		return this.schemaWrapper.asJson();
 	}
 
 	@Override
 	public String getDollarSchema() {
-		return schemaWrapper.getDollarSchema();
+		return this.schemaWrapper.getDollarSchema();
 	}
 
 	@Override
 	public String getId() {
-		return schemaWrapper.getId();
+		return this.schemaWrapper.getId();
 	}
 
 	@Override
 	public String getRef() {
-		return schemaWrapper.getRef();
+		return this.schemaWrapper.getRef();
 	}
 
 	@Override
 	public String getType() {
-		return schemaWrapper.getType();
+		return this.schemaWrapper.getType();
 	}
 
 	@Override
 	public Class<?> getJavaType() {
-		return schemaWrapper.getJavaType();
+		return this.schemaWrapper.getJavaType();
 	}
 
 	@Override
 	public boolean isEnumWrapper() {
-		return schemaWrapper.isEnumWrapper();
+		return this.schemaWrapper.isEnumWrapper();
 	}
 
 	@Override
 	public boolean isSimpleWrapper() {
-		return schemaWrapper.isSimpleWrapper();
+		return this.schemaWrapper.isSimpleWrapper();
 	}
 
 	@Override
 	public boolean isCustomWrapper() {
-		return schemaWrapper.isCustomWrapper();
+		return this.schemaWrapper.isCustomWrapper();
 	}
 
 	@Override
 	public boolean isRefWrapper() {
-		return schemaWrapper.isRefWrapper();
+		return this.schemaWrapper.isRefWrapper();
 	}
 
 	@Override
 	public boolean isArrayWrapper() {
-		return schemaWrapper.isArrayWrapper();
+		return this.schemaWrapper.isArrayWrapper();
 	}
 
 	@Override
 	public boolean isNullWrapper() {
-		return schemaWrapper.isNullWrapper();
+		return this.schemaWrapper.isNullWrapper();
 	}
 
 	@Override
 	public boolean isEmptyWrapper() {
-		return schemaWrapper.isEmptyWrapper();
+		return this.schemaWrapper.isEmptyWrapper();
 	}
 
 	@Override
 	public <T extends SchemaWrapper> T cast() {
-		return schemaWrapper.cast();
+		return this.schemaWrapper.cast();
 	}
 
-	protected void setRequired(boolean required) {
+	protected void setRequired(final boolean required) {
 		this.required = required;
 	}
 
 	protected AccessibleObject getAccessibleObject() {
-		return (field == null) ? method : field;
+		return (this.field == null) ? this.method : this.field;
 	}
 
-	protected String processId(Class<?> accessibleObject) {
+	protected static String processId(final Class<?> accessibleObject) {
 		final Attributes attributes = accessibleObject.getAnnotation(Attributes.class);
+
 		if (attributes != null) {
 			if (!attributes.id().isEmpty()) {
 				return attributes.id();
 			}
 		}
+
 		return null;
 	}
 
-	protected void processAttributes(ObjectNode node, AccessibleObject accessibleObject) {
+	protected void processAttributes(final ObjectNode node, final AccessibleObject accessibleObject) {
 		final Attributes attributes = accessibleObject.getAnnotation(Attributes.class);
+
 		if (attributes != null) {
-			// node.put("$schema", SchemaVersion.DRAFTV4.getLocation().toString());
 			node.remove("$schema");
+
 			if (!attributes.id().isEmpty()) {
 				node.put("id", attributes.id());
 			}
+
 			if (!attributes.description().isEmpty()) {
 				node.put("description", attributes.description());
 			}
+
 			if (!attributes.pattern().isEmpty()) {
 				node.put("pattern", attributes.pattern());
 			}
+
 			if (!attributes.title().isEmpty()) {
 				node.put("title", attributes.title());
 			}
+
 			if (attributes.maximum() > -1) {
 				node.put("maximum", attributes.maximum());
 			}
+
 			if (attributes.exclusiveMaximum()) {
 				node.put("exclusiveMaximum", true);
 			}
+
 			if (attributes.minimum() > -1) {
 				node.put("minimum", attributes.minimum());
 			}
+
 			if (attributes.exclusiveMinimum()) {
 				node.put("exclusiveMinimum", true);
 			}
+
 			if (attributes.enums().length > 0) {
 				ArrayNode enumArray = node.putArray("enum");
 				String[] enums = attributes.enums();
@@ -300,70 +318,86 @@ public class PropertyWrapper extends SchemaWrapper {
 					enumArray.add(v);
 				}
 			}
+
 			if (attributes.uniqueItems()) {
 				node.put("uniqueItems", true);
 			}
+
 			if (attributes.minItems() > 0) {
 				node.put("minItems", attributes.minItems());
 			}
+
 			if (attributes.maxItems() > -1) {
 				node.put("maxItems", attributes.maxItems());
 			}
+
 			if (attributes.multipleOf() > 0) {
 				node.put("multipleOf", attributes.multipleOf());
 			}
+
 			if (attributes.minLength() > 0) {
 				node.put("minLength", attributes.minLength());
 			}
+
 			if (attributes.maxLength() > -1) {
 				node.put("maxLength", attributes.maxLength());
 			}
+
 			if (attributes.required()) {
-				setRequired(true);
+				this.setRequired(true);
 			}
 		}
 	}
 
-	protected void processReference(Class<?> propertyType) {
+	protected void processReference(final Class<?> propertyType) {
 		boolean referenceExists = false;
 
 		JsonManagedReference refAnn =
-				getAccessibleObject().getAnnotation(JsonManagedReference.class);
+				this.getAccessibleObject().getAnnotation(JsonManagedReference.class);
+
 		if (refAnn != null) {
 			referenceExists = true;
-			managedReference =
-					new ManagedReference(getOwnerSchema().getJavaType(), refAnn.value(),
+			this.managedReference =
+					new ManagedReference(this.getOwnerSchema().getJavaType(), refAnn.value(),
 							propertyType);
-			referenceType = ReferenceType.FORWARD;
+			this.referenceType = ReferenceType.FORWARD;
 		}
 
-		JsonBackReference backRefAnn = getAccessibleObject().getAnnotation(JsonBackReference.class);
+		JsonBackReference backRefAnn =
+				this.getAccessibleObject().getAnnotation(JsonBackReference.class);
+
 		if (backRefAnn != null) {
-			if (referenceExists)
-				throw new RuntimeException("Error at " + getOwnerSchema().getJavaType().getName()
-						+ ": Cannot reference " + propertyType.getName()
-						+ " both as Managed and Back Reference.");
-			managedReference =
-					new ManagedReference(propertyType, backRefAnn.value(),
-							getOwnerSchema().getJavaType());
-			referenceType = ReferenceType.BACKWARD;
+
+			if (referenceExists) {
+				throw new RuntimeException("Error at "
+						+ this.getOwnerSchema().getJavaType().getName() + ": Cannot reference "
+						+ propertyType.getName() + " both as Managed and Back Reference.");
+			}
+
+			this.managedReference =
+					new ManagedReference(propertyType, backRefAnn.value(), this.getOwnerSchema()
+							.getJavaType());
+
+			this.referenceType = ReferenceType.BACKWARD;
 		}
 	}
 
 	@Override
 	protected ObjectNode getNode() {
-		return schemaWrapper.getNode();
+		return this.schemaWrapper.getNode();
 	}
 
 	@Override
 	protected void processNullable() {
-		final Nullable nullable = getAccessibleObject().getAnnotation(Nullable.class);
+		final Nullable nullable = this.getAccessibleObject().getAnnotation(Nullable.class);
+
 		if (nullable != null) {
-			if (isEnumWrapper()) {
-				((ArrayNode) getNode().get("enum")).add("null");
+
+			if (this.isEnumWrapper()) {
+				((ArrayNode) this.getNode().get("enum")).add("null");
 			} else {
-				String oldType = getType();
-				ArrayNode typeArray = getNode().putArray("type");
+				String oldType = this.getType();
+				ArrayNode typeArray = this.getNode().putArray("type");
 				typeArray.add(oldType);
 				typeArray.add("null");
 			}
@@ -371,23 +405,21 @@ public class PropertyWrapper extends SchemaWrapper {
 	}
 
 	@Override
-	protected String getNodeTextValue(JsonNode node) {
-		return schemaWrapper.getNodeTextValue(node);
+	protected String getNodeTextValue(final JsonNode node) {
+		return this.schemaWrapper.getNodeTextValue(node);
 	}
 
 	@Override
-	protected void setType(String type) {
-		schemaWrapper.setType(type);
+	protected void setType(final String type) {
+		this.schemaWrapper.setType(type);
 	}
 
 	private String processPropertyName() {
-		String name =
-				(field == null) ? firstToLowerCase(method.getName().replace("get", ""))
-						: field.getName();
-		return name;
+		return (this.field == null) ? firstToLowerCase(this.method.getName().replace("get", ""))
+				: this.field.getName();
 	}
 
-	private String firstToLowerCase(String string) {
+	private static String firstToLowerCase(final String string) {
 		return Character.toLowerCase(string.charAt(0))
 				+ (string.length() > 1 ? string.substring(1) : "");
 	}

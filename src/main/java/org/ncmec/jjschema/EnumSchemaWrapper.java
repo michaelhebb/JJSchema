@@ -17,9 +17,9 @@
 
 package org.ncmec.jjschema;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-
 import java.math.BigDecimal;
+
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /**
  * @author Danilo Reinert
@@ -27,10 +27,10 @@ import java.math.BigDecimal;
 
 public class EnumSchemaWrapper extends SchemaWrapper {
 
-	public <T> EnumSchemaWrapper(Class<T> type) {
+	public <T> EnumSchemaWrapper(final Class<T> type) {
 		super(type);
-		processEnum(type);
-		processNullable();
+		this.processEnum(type);
+		this.processNullable();
 	}
 
 	@Override
@@ -41,34 +41,34 @@ public class EnumSchemaWrapper extends SchemaWrapper {
 	// TODO: Shouldn't I check the Nullable annotation only on fields or methods?
 	@Override
 	protected void processNullable() {
-		final Nullable nullable = getJavaType().getAnnotation(Nullable.class);
+		final Nullable nullable = this.getJavaType().getAnnotation(Nullable.class);
 		if (nullable != null) {
-			((ArrayNode) getNode().get("enum")).add("null");
+			((ArrayNode) this.getNode().get("enum")).add("null");
 		}
 	}
 
-	private <T> void processEnum(Class<T> type) {
-		ArrayNode enumArray = getNode().putArray("enum");
+	private <T> void processEnum(final Class<T> type) {
+		ArrayNode enumArray = this.getNode().putArray("enum");
 		for (T constant : type.getEnumConstants()) {
 			String value = constant.toString();
 			// Check if value is numeric
 			try {
 				// First verifies if it is an integer
-				Long integer = Long.parseLong(value);
+				Long integer = Long.valueOf(value);
 				enumArray.add(integer);
-				setType("integer");
+				this.setType("integer");
 			}
 			// If not then verifies if it is an floating point number
 			catch (NumberFormatException e) {
 				try {
 					BigDecimal number = new BigDecimal(value);
 					enumArray.add(number);
-					setType("number");
+					this.setType("number");
 				}
 				// Otherwise add as String
 				catch (NumberFormatException e1) {
 					enumArray.add(value);
-					setType("string");
+					this.setType("string");
 				}
 			}
 		}

@@ -24,10 +24,10 @@ package org.ncmec.jjschema;
 
 public class SimpleSchemaWrapper extends SchemaWrapper {
 
-	public SimpleSchemaWrapper(Class<?> type) {
+	public SimpleSchemaWrapper(final Class<?> type) {
 		super(type);
-		setType(SimpleTypeMappings.forClass(type));
-		processNullable();
+		this.setType(SimpleTypeMappings.forClass(type));
+		this.processNullable();
 	}
 
 	@Override

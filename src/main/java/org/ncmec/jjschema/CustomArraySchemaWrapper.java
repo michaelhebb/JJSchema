@@ -17,9 +17,9 @@
 
 package org.ncmec.jjschema;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import java.util.Collection;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * @author Danilo Reinert
@@ -29,12 +29,13 @@ public class CustomArraySchemaWrapper extends CustomSchemaWrapper {
 
 	final SchemaWrapper itemsSchemaWrapper;
 
-	public CustomArraySchemaWrapper(Class<?> type, Class<?> parametrizedType) {
+	public CustomArraySchemaWrapper(final Class<?> type, final Class<?> parametrizedType) {
 		super(type);
 		if (parametrizedType != null) {
-			if (!Collection.class.isAssignableFrom(type))
+			if (!Collection.class.isAssignableFrom(type)) {
 				throw new RuntimeException(
 						"Cannot instantiate a SchemaWrapper of a non Collection class with a Parametrized Type.");
+			}
 			this.itemsSchemaWrapper = SchemaWrapperFactory.createWrapper(parametrizedType);
 		} else {
 			this.itemsSchemaWrapper = null;
@@ -42,18 +43,18 @@ public class CustomArraySchemaWrapper extends CustomSchemaWrapper {
 	}
 
 	public Class<?> getJavaParametrizedType() {
-		return itemsSchemaWrapper.getJavaType();
+		return this.itemsSchemaWrapper.getJavaType();
 	}
 
 	public boolean hasParametrizedType() {
-		return itemsSchemaWrapper != null;
+		return this.itemsSchemaWrapper != null;
 	}
 
 	protected JsonNode getItems() {
-		return getNode().get("items");
+		return this.getNode().get("items");
 	}
 
-	protected void setItems(JsonNode itemsNode) {
-		getNode().put("items", itemsNode);
+	protected void setItems(final JsonNode itemsNode) {
+		this.getNode().put("items", itemsNode);
 	}
 }

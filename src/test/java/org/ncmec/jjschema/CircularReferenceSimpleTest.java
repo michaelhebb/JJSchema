@@ -20,9 +20,6 @@ package org.ncmec.jjschema;
 import java.util.List;
 
 import org.junit.Test;
-import org.ncmec.jjschema.Attributes;
-import org.ncmec.jjschema.JsonSchemaFactory;
-import org.ncmec.jjschema.JsonSchemaV4Factory;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -31,17 +28,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * @author reinert
+ * @author Danilo Reinert
  */
 public class CircularReferenceSimpleTest {
 
 	static ObjectMapper MAPPER = new ObjectMapper();
 	JsonSchemaFactory schemaFactory = new JsonSchemaV4Factory();
 
-	/**
-	 * Test if @JsonManagedReference and @JsonBackReference works at a Simple Circular Reference
-	 * case
-	 */
 	@Test
 	public void testGenerateSchema() throws JsonProcessingException {
 

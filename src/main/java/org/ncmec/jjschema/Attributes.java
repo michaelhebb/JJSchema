@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 /**
  * Annotation for the attributes of JSON Schema
  *
- * @author reinert
+ * @author Danilo Reinert
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD, ElementType.FIELD, ElementType.TYPE })

@@ -24,14 +24,14 @@ public class ManagedReference {
 	final String name;
 	final Class<?> backwardType;
 
-	public ManagedReference(Class<?> type, String name, Class<?> backwardType) {
+	public ManagedReference(final Class<?> type, final String name, final Class<?> backwardType) {
 		this.type = type;
 		this.name = name;
 		this.backwardType = backwardType;
 	}
 
-	public ManagedReference(Class<?> collectionType, Class<?> type, String name,
-			Class<?> backwardType) {
+	public ManagedReference(final Class<?> collectionType, final Class<?> type, final String name,
+			final Class<?> backwardType) {
 		this.collectionType = collectionType;
 		this.type = type;
 		this.name = name;
@@ -43,43 +43,57 @@ public class ManagedReference {
 		final int prime = 31;
 		int result = 1;
 		result =
-				prime * result
-						+ ((collectionType == null) ? 0 : collectionType.getName().hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.getName().hashCode());
-		result = prime * result + ((backwardType == null) ? 0 : backwardType.getName().hashCode());
+				(prime * result)
+						+ ((this.collectionType == null) ? 0 : this.collectionType.getName()
+								.hashCode());
+		result = (prime * result) + ((this.name == null) ? 0 : this.name.hashCode());
+		result = (prime * result) + ((this.type == null) ? 0 : this.type.getName().hashCode());
+		result =
+				(prime * result)
+						+ ((this.backwardType == null) ? 0 : this.backwardType.getName().hashCode());
 		return result;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (this.getClass() != obj.getClass()) {
 			return false;
+		}
 		ManagedReference other = (ManagedReference) obj;
-		if (collectionType == null) {
-			if (other.collectionType != null)
+		if (this.collectionType == null) {
+			if (other.collectionType != null) {
 				return false;
-		} else if (!collectionType.getName().equals(other.collectionType.getName()))
+			}
+		} else if (!this.collectionType.getName().equals(other.collectionType.getName())) {
 			return false;
-		if (name == null) {
-			if (other.name != null)
+		}
+		if (this.name == null) {
+			if (other.name != null) {
 				return false;
-		} else if (!name.equals(other.name))
+			}
+		} else if (!this.name.equals(other.name)) {
 			return false;
-		if (type == null) {
-			if (other.type != null)
+		}
+		if (this.type == null) {
+			if (other.type != null) {
 				return false;
-		} else if (!type.getName().equals(other.type.getName()))
+			}
+		} else if (!this.type.getName().equals(other.type.getName())) {
 			return false;
-		if (backwardType == null) {
-			if (other.backwardType != null)
+		}
+		if (this.backwardType == null) {
+			if (other.backwardType != null) {
 				return false;
-		} else if (!backwardType.getName().equals(other.backwardType.getName()))
+			}
+		} else if (!this.backwardType.getName().equals(other.backwardType.getName())) {
 			return false;
+		}
 		return true;
 	}
 

@@ -23,7 +23,7 @@ package org.ncmec.jjschema;
 
 public class EmptySchemaWrapper extends SchemaWrapper {
 
-	public EmptySchemaWrapper(Class<?> type) {
+	public EmptySchemaWrapper(final Class<?> type) {
 		super(type);
 	}
 

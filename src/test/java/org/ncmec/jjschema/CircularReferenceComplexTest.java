@@ -20,8 +20,6 @@ package org.ncmec.jjschema;
 import java.io.IOException;
 
 import org.junit.Test;
-import org.ncmec.jjschema.JsonSchemaFactory;
-import org.ncmec.jjschema.JsonSchemaV4Factory;
 import org.ncmec.jjschema.model.Person;
 import org.ncmec.jjschema.model.Task;
 import org.ncmec.jjschema.model.TaskList;
@@ -31,19 +29,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
 /**
- * @author reinert
+ * @author Danilo Reinert
  */
 public class CircularReferenceComplexTest {
 
 	static ObjectWriter WRITER = new ObjectMapper().writerWithDefaultPrettyPrinter();
 	JsonSchemaFactory schemaFactory = new JsonSchemaV4Factory();
 
-	/**
-	 * Test if @JsonManagedReference and @JsonBackReference works at a Complex Circular Reference
-	 * case. This feature is not stable yet.
-	 *
-	 * @throws java.io.IOException
-	 */
 	@Test
 	public void testGenerateSchema() throws IOException {
 
