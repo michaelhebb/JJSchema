@@ -40,6 +40,8 @@ public @interface Attributes {
 
 	String type() default "";
 
+	String format() default "";
+
 	long maximum() default -1l;
 
 	boolean exclusiveMaximum() default false;

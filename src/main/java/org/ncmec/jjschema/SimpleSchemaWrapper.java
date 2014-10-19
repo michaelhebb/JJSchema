@@ -19,9 +19,9 @@ package org.ncmec.jjschema;
 
 
 /**
+ *
  * @author Danilo Reinert
  */
-
 public class SimpleSchemaWrapper extends SchemaWrapper {
 
 	public SimpleSchemaWrapper(final Class<?> type) {
